@@ -12,11 +12,11 @@ def haar(img):
     con_img = con_img.astype(np.uint8)  # 进行类型转换
     return con_img
 
-img=cv2.imread("C:\\Users\\Minglena\\Pictures\\test\\jade.jpg")
-
+img=cv2.imread("C:\\Users\\Minglena\\Pictures\\test\\timg9.jpg")
+img=cv2.resize(img,(640,480))
 img=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 cv2.imshow("img",img)
-src=cv2.bilateralFilter(img, 0, 5, 3)  # 双边滤波
+src=cv2.bilateralFilter(img, 0, 30, 3)  # 双边滤波
 cv2.imshow("bilateralFilter",src)
 cv2.imshow("haar",haar(img))
 cv2.waitKey(0)
