@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/Cleaner.iml" filepath="$PROJECT_DIR$/.idea/Cleaner.iml" />
+      <module fileurl="file://$USER_HOME$/Desktop/python/code/MSRCR_Python/.idea/MSRCR_Python.iml" filepath="$USER_HOME$/Desktop/python/code/MSRCR_Python/.idea/MSRCR_Python.iml" />
+      <module fileurl="file://$USER_HOME$/Desktop/python/code/.idea/code.iml" filepath="$USER_HOME$/Desktop/python/code/.idea/code.iml" />
+    </modules>
+  </component>
+</project>
