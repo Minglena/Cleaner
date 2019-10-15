@@ -78,10 +78,26 @@ def display_lines(image,lines):
             for x1,y1,x2,y2 in li:
                 cv2.line(line_image,(x1,y1),(x2,y2),(0,255,0),1)
     return line_image
+def fill_color_demo(image,m,n):#泛洪填充
+    h,w,ch=image.shape[:]#求图片的宽高以及通道
+    # print(h)
+    # print(w)
+    # print(ch)
+    mask=np.zeros([h+2,w+2],np.uint8)#创建图像数组
+    cv2.floodFill(image,mask,(3+m,3+n),(0,255,255),(60,60,60),(10,10,10),cv2.FLOODFILL_FIXED_RANGE)
+    return image
+def inverted(image):
+    height,weight=image.shape
+    for i in range(1,height-1):
+        for j in range(1,weight-1):
+            image[i,j]=255-image[i,j]
+    return image
+def count_edge_point(image):
+    pass
 
 img=cv2.imread("C:\\Users\\Minglena\\Pictures\\test\\timg12.jpg")
-img=cv2.resize(img,(640,480))
-src=cv2.medianBlur(img,9)
+src=cv2.resize(img,(640,480))
+src=cv2.medianBlur(src,7)
 test_gray=cv2.cvtColor(src,cv2.COLOR_BGR2GRAY)
 test_src=cv2.cvtColor(src,cv2.COLOR_BGR2HSV)#RGB图像转换为HSV图像
 H,S,V=cv2.split(test_src)
@@ -100,8 +116,8 @@ new_image,weight,height=gradient(V)
 new_image=con_matrix(new_image,weight,height,3,3)
 t2 = cv2.getTickCount()
 t = (t2 - t1) / cv2.getTickFrequency()
-# print(t)
-# cv2.imshow("new_image",new_image)
+print(t)
+cv2.imshow("new_image",new_image)
 
 """
 canny算子
@@ -114,9 +130,7 @@ canny算子
 
 test_ret2,test_thresh2=cv2.threshold(new_image,0,255,cv2.THRESH_OTSU)
 if test_thresh1[320,240]!=test_thresh2[320,240]:
-    for i in range(1,479):
-        for j in range(1,639):
-            test_thresh1[i,j]=255-test_thresh1[i,j]
+    test_thresh1=inverted(test_thresh1)
 cv2.imshow("test_thresh2",test_thresh2)
 """
 若中心像素点为黑色，则黑白转换
@@ -128,13 +142,12 @@ test_add = cv2.dilate(add,test_kernel1)  # 膨胀操作
 #面积约束算法
 test_erode=cv2.erode(test_add,test_kernel2)
 cv2.imshow("erode",test_erode)
+# V=inverted(V)
 edge_point,we,he=edge_point_extraction(test_thresh2,add)
 cv2.imshow("edge_point",edge_point)
 lines=cv2.HoughLinesP(edge_point,1, np.pi / 180, 50, np.array([]), minLineLength=20, maxLineGap=20)
 print(lines)
-line_image=display_lines(img,lines)
+line_image=display_lines(src,lines)
 cv2.imshow("line_image",line_image)
+cv2.imshow("fill_color",fill_color_demo(line_image,10,10))
 cv2.waitKey()
-"""
-8月26日，对梯度幅值进行测试，为进一步的道路边缘提取做准备
-"""
