@@ -223,21 +223,25 @@ def gradient(image):#梯度幅值
     new_img=np.array(new_image)
     return new_img.astype(np.uint8)
 
-cap=cv.VideoCapture("C:\\Users\\Minglena\\Pictures\\test\\test9.mp4")
+cap=cv.VideoCapture(0)
+# "C:\\Users\\Minglena\\Pictures\\test\\test9.mp4"
 pre_lines=[[-335,720,263,432],[1027,720,728,432]]
 count=0
-judge=[[1]]
+al_count=0
+judge=0
 bbox2=[[1]]
 bbox3=[[1]]
+last_bbox=[1]
 cou=True
 txy=[]
 
 s=[]
 tracker_multi = cv.MultiTracker_create()
 while 1:
+    al_count=al_count+1
     count=count+1
     if count==1:
-        bbox3 = [[1]]
+        bbox3 = last_bbox
     ret,frame=cap.read()#读取视频图像帧
     frame = cv.resize(frame, (640, 360), interpolation=cv.INTER_CUBIC)  # 重设窗口大小
     """
@@ -376,13 +380,17 @@ while 1:
             # cv.waitKey(100)
         # frame_copy = tracker(ret, bbox, frame_copy)
         # print(bbox)
-        if bbox is False:
+        if len(bbox):
+            pass
+        else:
             print("bbox is None")
-        if bbox and cou is True:
+        if len(bbox) and cou is True:
             bbox1=np.array(bbox)
             # print(bbox1)
             count=2
+            al_count=0
             cou=False
+            print("执行")
         elif count is 3:
             bbox2=np.array(bbox)
         elif count is 4:
@@ -397,6 +405,11 @@ while 1:
                 # print(bbox3)
         # print(bbox)
         # print(count)
+
+        if al_count>40:
+            if len((bbox2))==0:
+                bbox2=last_bbox
+        print(al_count)
         if count is 2:#第一帧图像的标记
             mid_bx1=mid_point(bbox1)
             print(mid_bx1)
@@ -590,10 +603,20 @@ while 1:
             cv.waitKey(0)
     if len(bbox3):
         count=count
+        last_bbox=bbox3
     else:
         count=0
-    # print(bbox2)
-    # test
+    # print(len(bbox3))
+    # if len(bbox2)>2:
+    #     if judge==0:
+    #         al_count=0
+    # if len(bbox2):
+    #     count = count
+    # else:
+    #     count = 0
+    # if al_count==0:
+    #     judge=1
+    print(bbox2)
     print(bbox3)
-    print(count)
-    cv.waitKey(0)
+    # print(count)
+    cv.waitKey(10)
