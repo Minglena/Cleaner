@@ -223,7 +223,7 @@ def gradient(image):#梯度幅值
     new_img=np.array(new_image)
     return new_img.astype(np.uint8)
 
-cap=cv.VideoCapture(0)
+cap=cv.VideoCapture("C:\\Users\\Minglena\\Pictures\\test\\test9.mp4")
 # "C:\\Users\\Minglena\\Pictures\\test\\test9.mp4"
 pre_lines=[[-335,720,263,432],[1027,720,728,432]]
 count=0
@@ -388,9 +388,7 @@ while 1:
             bbox1=np.array(bbox)
             # print(bbox1)
             count=2
-            # al_count=0
             cou=False
-            print("执行")
         elif count is 3:
             bbox2=np.array(bbox)
         elif count is 4:
@@ -405,15 +403,14 @@ while 1:
                 # print(bbox3)
         # print(bbox)
         # print(count)
-        if len(bbox3):
+        if len(bbox3):#判断是否开始识别到物体
             if len(bbox2):
                 if sou is True:
                     al_count=0
                     sou=False
-                    print("执行")
-        if sou is False:
+        if sou is False:#开始的那一帧，al_count循环加一
             al_count=al_count+1
-        if al_count>4:
+        if al_count>4:#当al_count大于4的时候，如果这一帧为空，则继承上一帧的数据
             if len((bbox2))==0:
                 bbox2=last_bbox
         print("al_count",al_count)
@@ -608,22 +605,9 @@ while 1:
             break
         elif key == ord(' '):  # 按下空格键时，暂停
             cv.waitKey(0)
-    if len(bbox3):
+    if len(bbox3):#如果bbox3不为空，更新继承数据；若为空，将count重置，重新开始
         count=count
         last_bbox=bbox3
     else:
         count=0
-    # print(len(bbox3))
-    # if len(bbox2)>2:
-    #     if judge==0:
-    #         al_count=0
-    # if len(bbox2):
-    #     count = count
-    # else:
-    #     count = 0
-    # if al_count==0:
-    #     judge=1
-    print(bbox2)
-    print(bbox3)
-    # print(count)
     cv.waitKey(10)
