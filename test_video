@@ -235,6 +235,7 @@ while 1:
     count=count+1
     ret,frame=cap.read()#读取视频图像帧
     frame = cv.resize(frame, (640, 360), interpolation=cv.INTER_CUBIC)  # 重设窗口大小
+    """
     test_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     test_src = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     H, S, V = cv2.split(test_src)
@@ -263,13 +264,16 @@ while 1:
     test_kernel2 = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))  # 卷积核
     test_erode = cv2.erode(test_thresh, test_kernel2)
     cv2.imshow("erode", test_erode)
+    """
+
     # 原图中的四个角点(左上、右上、左下、右下),与变换后矩阵位置
     # pts1 = np.float32([[100, 0], [540, 0], [0, 360], [640, 360]])
     # pts2 = np.float32([[0, 0], [640, 0], [0, 360], [640, 360]])
     # 生成透视变换矩阵；进行透视变换
     # M1 = cv.getPerspectiveTransform(pts1, pts2)
     # frame = cv.warpPerspective(frame, M1, (640, 360))
-    cv.imshow("frame",frame)
+
+    # cv.imshow("frame",frame)
     frame_copy=frame.copy()
 
     if count is 1:
@@ -298,12 +302,12 @@ while 1:
             background = background
         else:
             background = cv.addWeighted(prveFrame, 0.91, background, 0.31, 0)  # 背景更新算法，超过阈值时进行背景更新,（背景更新为0.1，0.99，前景更新为0.91，0.31）
-        cv.imshow("background", background)
+        # cv.imshow("background", background)
         prveFrame = gray_frame.copy()
         frameDiff = cv.subtract(background, gray_frame)  # 图像的减操作
         # cv.imshow("framediff0",frameDiff)
         frameDiff = cv.GaussianBlur(frameDiff, (7, 7), 0)  # 高斯模糊算法
-        cv.imshow("frameDiff2", frameDiff)  # 忽略较小的差别
+        # cv.imshow("frameDiff2", frameDiff)  # 忽略较小的差别
         retVal, thresh = cv.threshold(frameDiff, 63, 255, cv.THRESH_BINARY)  # 二值化，改变255前面的值可以改善背景（背景更新为0.83，前景更新为0.58）
         # thresh =cv.adaptiveThreshold(frameDiff,255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY,25, 5)
         thresh = cv.dilate(thresh, None, iterations=1)#膨胀操作
@@ -418,7 +422,6 @@ while 1:
                 mi_sqrt = []
                 mid_s=[]
                 for bx1 in mid_bx1:
-
                     sqrt=(bx1[0]-bx2[0])*(bx1[0]-bx2[0])+(bx1[1]-bx2[1])*(bx1[1]-bx2[1])
                     mi_sqr.append(bx2[0])
                     mi_sqr.append(bx2[1])
@@ -579,4 +582,4 @@ while 1:
             break
         elif key == ord(' '):  # 按下空格键时，暂停
             cv.waitKey(0)
-    cv.waitKey(10)
+    cv.waitKey(1)
