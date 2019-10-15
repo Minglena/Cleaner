@@ -229,16 +229,16 @@ pre_lines=[[-335,720,263,432],[1027,720,728,432]]
 count=0
 al_count=0
 judge=0
-bbox2=[[1]]
-bbox3=[[1]]
+bbox2=[]
+bbox3=[]
 last_bbox=[1]
 cou=True
+sou=True
 txy=[]
 
 s=[]
 tracker_multi = cv.MultiTracker_create()
 while 1:
-    al_count=al_count+1
     count=count+1
     if count==1:
         bbox3 = last_bbox
@@ -388,7 +388,7 @@ while 1:
             bbox1=np.array(bbox)
             # print(bbox1)
             count=2
-            al_count=0
+            # al_count=0
             cou=False
             print("执行")
         elif count is 3:
@@ -405,11 +405,18 @@ while 1:
                 # print(bbox3)
         # print(bbox)
         # print(count)
-
-        if al_count>40:
+        if len(bbox3):
+            if len(bbox2):
+                if sou is True:
+                    al_count=0
+                    sou=False
+                    print("执行")
+        if sou is False:
+            al_count=al_count+1
+        if al_count>4:
             if len((bbox2))==0:
                 bbox2=last_bbox
-        print(al_count)
+        print("al_count",al_count)
         if count is 2:#第一帧图像的标记
             mid_bx1=mid_point(bbox1)
             print(mid_bx1)
