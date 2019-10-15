@@ -593,6 +593,6 @@ while 1:
     else:
         count=0
     # print(bbox2)
-    # print(bbox3)
-    # print(count)
+    print(bbox3)
+    print(count)
     cv.waitKey(0)
