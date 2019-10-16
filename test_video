@@ -192,8 +192,8 @@ def region_of_interest(image):  #ROI区域
     masked_image=cv.bitwise_and(image,mask)
     return masked_image
 def fill_color_demo(image,m,n):  #泛洪填充
-    h,w,ch=image.shape[:]#求图片的宽高以及通道
-    mask=np.zeros([h+2,w+2],np.uint8)#创建图像数组
+    h,w,ch=image.shape[:]  #求图片的宽高以及通道
+    mask=np.zeros([h+2,w+2],np.uint8)  #创建图像数组
     cv.floodFill(image,mask,(3+m,3+n),(255,255,255),(60,60,60),(10,10,10),cv.FLOODFILL_FIXED_RANGE)
     return image
 def haar(img):  #特征提取
