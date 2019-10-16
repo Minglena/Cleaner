@@ -5,7 +5,7 @@ import sys
 import pywt
 from goto import with_goto
 
-def tracker(ret,bbox,frame_copy):#多目标跟踪函数
+def tracker(ret,bbox,frame_copy):  #多目标跟踪函数
     tracker_types = ['BOOSTING', 'MIL', 'KCF', 'TLD', 'MEDIANFLOW', 'GOTURN']
     tracker_type = tracker_types[4]
     if tracker_type == 'BOOSTING':
@@ -35,19 +35,18 @@ def tracker(ret,bbox,frame_copy):#多目标跟踪函数
         cv.putText(frame_copy, "Tracking failure detected", (100, 80), cv.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2)
     return frame_copy
 def mat(box):
-    mat=-1
     box_mat=[]
     for bbox in box:
         mat=mat+1
         box_mat[mat]=bbox
-def mid_point(bbox):#取中心点函数，返回值：（x,y）
+def mid_point(bbox):  #取中心点函数，返回值：（x,y）,物体标数时使用
     mid_points=[]
     for bbbox in bbox:
         mid_point1 = np.int0(bbbox[0] + bbbox[2] / 2)
         mid_point2 = np.int0(bbbox[1] + bbbox[3] / 2)
         mid_points.append([mid_point1,mid_point2])
     return mid_points
-def count_box(box):#处理数字函数，对数字进行排序
+def count_box(box):  #处理数字函数，对数字进行排序
     ct=[]
     ti=0
     for bo in box:
@@ -83,7 +82,7 @@ def count_box(box):#处理数字函数，对数字进行排序
 
     # if ct[1] is j:
     #     return j+1
-def mid_sqr(mid):#寻找前后最近的两点，返回值：（x,y,min_sqrt）
+def mid_sqr(mid):#寻找前后最近的两点，返回值：（x,y,min_sqrt），判断是否为同一物体
     ct=[]
     i=-1
     for sq in mid:
@@ -95,7 +94,7 @@ def mid_sqr(mid):#寻找前后最近的两点，返回值：（x,y,min_sqrt）
     # print(ct)
     for sq in mid:
         return ([sq[0],sq[1],ct[0]])
-def sum_sqrt(s_sqrt,sn):
+def sum_sqrt(s_sqrt,sn): #求图像中走过像素的距离，后期用于折算实际距离
     ct=[]
 
     sm=[]
@@ -118,7 +117,7 @@ def sum_sqrt(s_sqrt,sn):
                 su=su+sq[1]
         sm.append([c, su])
     return sm
-def cross_point(line1, line2):  # 计算交点函数
+def cross_point(line1, line2):  # 计算角点函数
     x1 = line1[0]  # 取四点坐标
     y1 = line1[1]
     x2 = line1[2]
@@ -142,18 +141,18 @@ def cross_point(line1, line2):  # 计算交点函数
     y = k1 * x * 1.0 + b1 * 1.0
     # print(x,y)
     return [x, y]
-def make_coordinates(image,line_parameters):
+def make_coordinates(image,line_parameters):  #ROI区域使用，用于确定ROI区域的上边界
     slope,intercept=line_parameters
     y1=image.shape[0]
     y2=int(y1*(1/5))
     x1=int((y1-intercept)/slope)
     x2=int((y2-intercept)/slope)
     return np.array([x1,y1,x2,y2])
-def average_slope_intercept(image,lines):
+def average_slope_intercept(image,lines):  #非结构化道路直线拟合
     left_fit=[]
     right_fit=[]
     for line in lines:
-        x1, y1, x2, y2 = line.reshape(4)#重新构造数组
+        x1, y1, x2, y2 = line.reshape(4)  #重新构造数组
         parameters=np.polyfit((x1,x2),(y1,y2),1)#多项式拟合
         # print(parameters)
         slope=parameters[0]
@@ -172,31 +171,31 @@ def average_slope_intercept(image,lines):
     right_line[2]=x
     right_line[3]=y
     return np.array([left_line,right_line])
-def canny(image):
+def canny(image):  #边缘检测
     gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
     blur = cv.GaussianBlur(gray, (5, 5), 0)  # 高斯模糊
     canny = cv.Canny(blur, 110, 150)  # canny算子进行边缘检测，deep，high用于筛选线条的数量（长度？）
     return canny
-def display_lines(image):
+def display_lines(image):  #
     line_image=np.zeros_like(image)
     hei=200
     cv.line(line_image,(0,544),(180,hei),(0,255,0),3)
     cv.line(line_image, (180, hei), (780,hei), (0, 255, 0), 3)
     cv.line(line_image, (780,hei), (960, 544), (0, 255, 0), 3)
     return line_image
-def region_of_interest(image):
+def region_of_interest(image):  #ROI区域
     height=image.shape[0]
     polygons=np.array([[(100,height),(900,height),(400,100)]])
     mask=np.zeros_like(image)
     cv.fillPoly(mask,polygons,255)
     masked_image=cv.bitwise_and(image,mask)
     return masked_image
-def fill_color_demo(image,m,n):#泛洪填充
+def fill_color_demo(image,m,n):  #泛洪填充
     h,w,ch=image.shape[:]#求图片的宽高以及通道
     mask=np.zeros([h+2,w+2],np.uint8)#创建图像数组
     cv.floodFill(image,mask,(3+m,3+n),(255,255,255),(60,60,60),(10,10,10),cv.FLOODFILL_FIXED_RANGE)
     return image
-def haar(img):
+def haar(img):  #特征提取
     coefs = pywt.wavedec2(img, 'haar', level=2)
     coefs[1] = pywt.threshold(coefs[1], 5, 'soft', 0)
     coefs[2] = pywt.threshold(coefs[2], 5, 'soft', 0)
@@ -204,7 +203,7 @@ def haar(img):
     con_img = pywt.waverec2(coefs, 'haar')
     con_img = con_img.astype(np.uint8)  # 进行类型转换
     return con_img
-def gradient(image):#梯度幅值
+def gradient(image):  #梯度幅值
     weight,height=image.shape
     new_image=[]
     for i in range(2,weight-1):
@@ -223,7 +222,7 @@ def gradient(image):#梯度幅值
     new_img=np.array(new_image)
     return new_img.astype(np.uint8)
 
-cap=cv.VideoCapture("C:\\Users\\Minglena\\Pictures\\test\\test9.mp4")
+cap=cv.VideoCapture(0)
 # "C:\\Users\\Minglena\\Pictures\\test\\test9.mp4"
 pre_lines=[[-335,720,263,432],[1027,720,728,432]]
 count=0
