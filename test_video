@@ -229,7 +229,7 @@ def out_number(t):
     bx3.append(t)
     return bx3
 
-cap=cv.VideoCapture(0)
+cap=cv.VideoCapture("C:\\Users\\Minglena\\Pictures\\test\\test3.mp4")
 # "C:\\Users\\Minglena\\Pictures\\test\\test9.mp4"
 pre_lines=[[-335,720,263,432],[1027,720,728,432]]
 count=0
@@ -247,6 +247,8 @@ s=[]
 tracker_multi = cv.MultiTracker_create()
 while 1:
     count=count+1
+    if al_count>1000:
+        al_count=5
     if count==1:
         bbox3 = last_bbox
     ret,frame=cap.read()#读取视频图像帧
@@ -387,10 +389,12 @@ while 1:
             # cv.waitKey(100)
         # frame_copy = tracker(ret, bbox, frame_copy)
         # print(bbox)
+        out_number_judge = True
         if len(bbox):
             pass
         else:
             print("bbox is None")
+            out_number_judge = False
         if len(bbox) and cou is True:
             bbox1=np.array(bbox)
             # print(bbox1)
@@ -417,9 +421,11 @@ while 1:
                     sou=False
         if sou is False:#开始的那一帧，al_count循环加一
             al_count=al_count+1
+
         if al_count>4:#当al_count大于4的时候，如果这一帧为空，则继承上一帧的数据
             if len((bbox2))==0:
                 bbox2=last_bbox
+
         print("al_count",al_count)
         if count is 2:#第一帧图像的标记
             mid_bx1=mid_point(bbox1)
@@ -440,7 +446,7 @@ while 1:
         if count is 3:#第二帧图像的标记
             # mid_bx1 = mid_point(bbox1)
             mid_bx2=mid_point(bbox2)
-            print("open")
+            # print("open")
             # print(mid_bx2)
             # print("off")
             co = True
@@ -469,13 +475,17 @@ while 1:
                         if mid_s[2]==sqrt:
                             # print("t")
                             t = bx1[2]
-                            cv.putText(frame, str(t), (mid_s[0], mid_s[1]), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                            if out_number_judge is True:
+                                # print("mid_bx1处执行")
+                                cv.putText(frame, str(t), (mid_s[0], mid_s[1]), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
                             bx2.append(t)
                             s_sqrt.append([t, sqrt])
                 l=len(bx2)
                 if l==2:
                     t=count_box(mid_bx2)
-                    cv.putText(frame, str(t), (mid_s[0], mid_s[1]), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                    if out_number_judge is True:
+                        # print("l==2处执行")
+                        cv.putText(frame, str(t), (mid_s[0], mid_s[1]), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
                     bx2.append(t)
             if mid_bx2:
             #     txy.append((np.array(mid_bx2)).astype(np.float64))
@@ -521,11 +531,13 @@ while 1:
                         if sqrt<l_point or sqrt==0:
                             if mid_s[2]==sqrt:
                                 t=bx2[2]
-                                cv.putText(frame, str(t), (mid_s[0], mid_s[1]), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-                                cv.putText(frame,"+", (mid_s[0]+40, mid_s[1]), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255),2)
-                                for ss in s:
-                                    if t==ss[0]:
-                                        cv.putText(frame,str(ss[1]), (mid_s[0] + 80, mid_s[1]), cv.FONT_HERSHEY_SIMPLEX, 1,(0, 0, 255), 2)
+                                if out_number_judge is True:
+                                    # print("mid_bx2处执行")
+                                    cv.putText(frame, str(t), (mid_s[0], mid_s[1]), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                                    cv.putText(frame,"+", (mid_s[0]+40, mid_s[1]), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255),2)
+                                    for ss in s:
+                                        if t==ss[0]:
+                                            cv.putText(frame,str(ss[1]), (mid_s[0] + 80, mid_s[1]), cv.FONT_HERSHEY_SIMPLEX, 1,(0, 0, 255), 2)
                                 bx3.append(t)
                                 s_sqrt.append([t,sqrt])
                     l = len(bx3)
@@ -534,11 +546,13 @@ while 1:
                             pass
                         else:
                             t = count_box(mid_bx3)
-                            cv.putText(frame, str(t), (mid_s[0], mid_s[1]), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-                            cv.putText(frame, "+", (mid_s[0] + 40, mid_s[1]), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-                            for ss in s:
-                                if t == ss[0]:
-                                    cv.putText(frame, str(ss[1]), (mid_s[0] + 80, mid_s[1]), cv.FONT_HERSHEY_SIMPLEX, 1,(0, 0, 255), 2)
+                            if out_number_judge is True:
+                                # print("mid_bx3处执行")
+                                cv.putText(frame, str(t), (mid_s[0], mid_s[1]), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                                cv.putText(frame, "+", (mid_s[0] + 40, mid_s[1]), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                                for ss in s:
+                                    if t == ss[0]:
+                                        cv.putText(frame, str(ss[1]), (mid_s[0] + 80, mid_s[1]), cv.FONT_HERSHEY_SIMPLEX, 1,(0, 0, 255), 2)
                             bx3.append(t)
                 # print(mid_bx2)
                 mid_bx2=mid_bx3
@@ -551,7 +565,6 @@ while 1:
                 # mid_bx2_array=np.array(mid_bx2)
                 # print(mid_bx2_array)
                 if mid_bx2:
-                #     txy.append((np.array(mid_bx2)).astype(np.float64))
                     txy.append(mid_bx2)
                 # print(txy)
                     # print(mid_s)
