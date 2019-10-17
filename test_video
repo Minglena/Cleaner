@@ -1,9 +1,7 @@
 import cv2 as cv
-import cv2
 import numpy as np
 import sys
 import pywt
-from goto import with_goto
 
 def tracker(ret,bbox,frame_copy):  #多目标跟踪函数
     tracker_types = ['BOOSTING', 'MIL', 'KCF', 'TLD', 'MEDIANFLOW', 'GOTURN']
@@ -222,6 +220,14 @@ def gradient(image):  #梯度幅值
         new_image.append(hei)
     new_img=np.array(new_image)
     return new_img.astype(np.uint8)
+def out_number(t):
+    cv.putText(frame, str(t), (mid_s[0], mid_s[1]), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+    cv.putText(frame, "+", (mid_s[0] + 40, mid_s[1]), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+    for ss in s:
+        if t == ss[0]:
+            cv.putText(frame, str(ss[1]), (mid_s[0] + 80, mid_s[1]), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+    bx3.append(t)
+    return bx3
 
 cap=cv.VideoCapture(0)
 # "C:\\Users\\Minglena\\Pictures\\test\\test9.mp4"
@@ -234,6 +240,7 @@ bbox3=[]
 last_bbox=[1]
 cou=True
 sou=True
+out_number_judge=True
 txy=[]
 
 s=[]
@@ -274,14 +281,14 @@ while 1:
     test_erode = cv2.erode(test_thresh, test_kernel2)
     cv2.imshow("erode", test_erode)
     """
-
-    # 原图中的四个角点(左上、右上、左下、右下),与变换后矩阵位置
-    # pts1 = np.float32([[100, 0], [540, 0], [0, 360], [640, 360]])
-    # pts2 = np.float32([[0, 0], [640, 0], [0, 360], [640, 360]])
-    # 生成透视变换矩阵；进行透视变换
-    # M1 = cv.getPerspectiveTransform(pts1, pts2)
-    # frame = cv.warpPerspective(frame, M1, (640, 360))
-
+    """
+    原图中的四个角点(左上、右上、左下、右下),与变换后矩阵位置
+    pts1 = np.float32([[100, 0], [540, 0], [0, 360], [640, 360]])
+    pts2 = np.float32([[0, 0], [640, 0], [0, 360], [640, 360]])
+    生成透视变换矩阵；进行透视变换
+    M1 = cv.getPerspectiveTransform(pts1, pts2)
+    frame = cv.warpPerspective(frame, M1, (640, 360))
+    """
     cv.imshow("frame",frame)
     frame_copy=frame.copy()
     print("start")
