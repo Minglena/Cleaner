@@ -1,7 +1,6 @@
 import cv2 as cv
 import numpy as np
 import cv2
-
 def cross_point(line1, line2):  # 计算交点函数
     x1 = line1[0]  # 取四点坐标
     y1 = line1[1]
@@ -149,7 +148,6 @@ def fill_color_demo(image,m,n):#泛洪填充
     cv.floodFill(image,mask,(3+m,3+n),(255,255,255),(60,60,60),(10,10,10),cv.FLOODFILL_FIXED_RANGE)
     cv.floodFill(image, mask, (640-m,3+n), (255, 255, 255), (60, 60, 60), (10, 10, 10), cv.FLOODFILL_FIXED_RANGE)
     return image
-
 # def left_right(averaged):
 #     if averaged[1]
 
@@ -164,7 +162,6 @@ def fill_color_demo(image,m,n):#泛洪填充
 # combo_image=cv.addWeighted(lane_image,0.8,line_image,1,1)
 # cv.imshow("result",combo_image)
 # cv.waitKey(0)
-
 cap=cv.VideoCapture("C:\\Users\\Minglena\\Pictures\\test\\test3.mp4")
 pre_lines=[[-335,720,263,432],[1027,720,728,432]]
 count=0
@@ -183,14 +180,12 @@ while 1:
     # cropped_image = region_of_interest(canny_image)
     # cv.imshow("cropped_image",cropped_image)
     lines = cv.HoughLinesP(canny_image, 1, np.pi / 180, 100, np.array([]), minLineLength=40, maxLineGap=5)
-    # print(type(lines))
-    if lines is None:
+    if lines is None:#用于继承上一帧数据
         lines = pre_lines
         lines = np.array(lines)
         lines = lines.astype(np.float64)
         print("空")
     pre_lines=lines
-    # print(lines)
     averaged_lines,last_left_fit_average,last_right_fit_average = average_slope_intercept(frame, lines,lines_judge,last_left_fit_average,last_right_fit_average)
     lines_judge=False
     print(averaged_lines)
@@ -203,9 +198,8 @@ while 1:
     wight = frame.shape[1]
     mask = np.zeros((height, wight, 3), dtype='uint8')
     cv.drawContours(mask, contours, -1, (0, 200, 500), 2)
-    # cv.imshow("mask", mask)
     combo_image = cv.addWeighted(frame, 0.8, line_image, 1, 1)
-    # cv.imshow("result", combo_image)
+    cv.imshow("result", combo_image)
     if count is 1:
         firstFrame = cv.resize(combo_image, (640, 360), interpolation=cv.INTER_CUBIC)
         gray_firstFrame = cv.cvtColor(firstFrame, cv.COLOR_BGR2GRAY)  # 灰度化
