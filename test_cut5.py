@@ -49,6 +49,19 @@ def make_coordinates(image,line_parameters):
     x1=int((y1-intercept)/slope)
     x2=int((y2-intercept)/slope)
     return np.array([x1,y1,x2,y2])
+def bool_judge(left_fit_average,last_left_fit_average,right_fit_average,last_right_fit_average):#暂时没有用到，用于判断是否为布尔类型
+    if type(np.isnan(left_fit_average)) is bool:
+        left_fit_average = last_left_fit_average
+        print("left_fit继承")
+    else:
+        last_left_fit_average = left_fit_average
+        print("last_left_fit继承")
+    if type(np.isnan(right_fit_average)) is bool:
+        right_fit_average = last_right_fit_average
+        print("right-fit继承")
+    else:
+        last_right_fit_average = right_fit_average
+        print("last_right_fit继承")
 def average_slope_intercept(image,lines,lines_judge,last_left_fit_average,last_right_fit_average):
     left_fit=[]
     right_fit=[]
@@ -84,20 +97,19 @@ def average_slope_intercept(image,lines,lines_judge,last_left_fit_average,last_r
     if lines_judge is False:
         print("left_fit_average is",np.isnan(left_fit_average),type(np.isnan(left_fit_average)))
         print("right_fit_average is",np.isnan(right_fit_average),type(np.isnan(right_fit_average)))
-        # print(any(left_fit_average))
-        # print(any((right_fit_average)))
-        if type(np.isnan(left_fit_average))==bool:
-            left_fit_average=last_left_fit_average
-            print("left_fit继承")
-        else:
-            last_left_fit_average=left_fit_average
+        #np.isnan(left_fit_average)为Ture时，其值的类型为np.bool，而不是bool
+        if type(np.isnan(left_fit_average)) is np.ndarray:
+            last_left_fit_average = left_fit_average
             print("last_left_fit继承")
-        if type(np.isnan(right_fit_average))==bool:
-            right_fit_average=last_right_fit_average
-            print("right-fit继承")
         else:
-            last_right_fit_average=right_fit_average
+            left_fit_average = last_left_fit_average
+            print("left_fit继承")
+        if type(np.isnan(right_fit_average)) is np.ndarray:
+            last_right_fit_average = right_fit_average
             print("last_right_fit继承")
+        else:
+            right_fit_average = last_right_fit_average
+            print("right-fit继承")
     print("left_fit_average's type is",type(left_fit_average))
     left_line=make_coordinates(image,left_fit_average)
     right_line=make_coordinates(image,right_fit_average)
